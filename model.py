@@ -20,15 +20,18 @@ class User(Base):
     point = Column(Integer)
     profile_pathname = Column(String(255))
     password = Column(String(255), nullable=False)
-    department = Column(Enum(DepartmentEnum), nullable=True)  # Here, sqlalchemy.Enum is used
+    department = Column(Enum(DepartmentEnum), nullable=True) 
     year = Column(Integer)
     created_date = Column(DateTime, default=datetime.now(timezone.utc))
     modified_date = Column(DateTime, default=datetime.now(timezone.utc), onupdate=datetime.now(timezone.utc))
     is_active = Column(Boolean, default=False)
     verification_code = Column(Integer, nullable=True)
     
-    # Define the one-to-many relationship
     transaction_posts = relationship("TransactionPost", back_populates="user")
+    transactions_as_employer = relationship("Transaction", foreign_keys='Transaction.employer_id')
+    transactions_as_worker = relationship("Transaction", foreign_keys='Transaction.worker_id')
+    user_transactions = relationship("UserTransaction", back_populates="user")
+    notifications = relationship("Notification", back_populates="user")
 
 
 class TransactionPost(Base):
@@ -43,8 +46,48 @@ class TransactionPost(Base):
     image_pathname = Column(String(255), nullable=True)
     created_date = Column(DateTime, default=datetime.now(timezone.utc))
 
-    # Define the many-to-one relationship
     user = relationship("User", back_populates="transaction_posts")
+    transactions = relationship("Transaction", back_populates="transaction_post")
+    user_transactions = relationship("UserTransaction", back_populates="transaction_post")
     
+class Transaction(Base):
+    __tablename__ = 'transaction'
     
+    transaction_id = Column(String, primary_key=True, index=True)
+    transaction_post_id = Column(String, ForeignKey('transaction_post.transaction_post_id'))
+    user_id = Column(String, ForeignKey('user.user_id'))
+    status = Column(Integer)
+    content = Column(String(500))
+    image_pathname = Column(String)
+    created_date = Column(DateTime, default=datetime.utcnow)
+    
+    user = relationship("User", back_populates="transactions")
+    transaction_post = relationship("TransactionPost", back_populates="transactions")
+    notifications = relationship("Notification", back_populates="transaction")
+
+class UserTransaction(Base):
+    __tablename__ = 'user_transaction'
+    
+    user_transaction_post_id = Column(String, primary_key=True, index=True)
+    user_id = Column(String, ForeignKey('user.user_id'))
+    transaction_post_id = Column(String, ForeignKey('transaction_post.transaction_post_id'))
+    heart = Column(Boolean, default=False)
+    
+    user = relationship("User", back_populates="user_transactions")
+    transaction_post = relationship("TransactionPost", back_populates="user_transactions")
+
+class Notification(Base):
+    __tablename__ = 'notification'
+    
+    notification_id = Column(String, primary_key=True, index=True)
+    transaction_id = Column(String, ForeignKey('transaction.transaction_id'))
+    transaction_post_id = Column(String, ForeignKey('transaction_post.transaction_post_id'))
+    user_id = Column(String, ForeignKey('user.user_id'))
+    type = Column(Integer)
+    content = Column(String)
+    
+    user = relationship("User", back_populates="notifications")
+    transaction = relationship("Transaction", back_populates="notifications")
+    transaction_post = relationship("TransactionPost", back_populates="notifications")
+
 
