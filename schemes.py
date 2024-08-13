@@ -54,3 +54,21 @@ class TransactionPostOut(TransactionPostBase):
 class VerificationCodeModel(BaseModel):
     email: EmailStr
     code: int
+    
+class TransactionBase(BaseModel):
+    status: int
+    content: str | None = None
+    image_pathname: str | None = None
+
+class TransactionCreate(TransactionBase):
+    transaction_post_id: str | None = None
+    user_id: str | None = None
+
+class Transaction(TransactionBase):
+    transaction_id: str
+    transaction_post_id: str
+    user_id: str
+    created_date: datetime
+
+    class Config:
+        orm_mode = True

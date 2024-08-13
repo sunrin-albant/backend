@@ -9,9 +9,9 @@ class TransactionPostRepository:
         self.db = db
 
     def create_post(self, post: TransactionPostCreate, user_id : str) -> TransactionPost:
-        post_dict = post.dict()
-        post_dict["user_id"] = user_id
-        db_post = TransactionPost(**post_dict)
+        post_data = post.dict()
+        post_data['user_id'] = user_id  # user_id를 딕셔너리에 추가
+        db_post = TransactionPost(**post_data)
         self.db.add(db_post)
         self.db.commit()
         self.db.refresh(db_post)
