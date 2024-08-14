@@ -37,18 +37,46 @@ async def submit_transaction(
 
 @transaction_router.get("/{transaction_id}", response_model=schemes.Transaction)
 def read_transaction(transaction_id: str, db: Session = Depends(get_db)):
-    db_transaction = TransactionService.get_transaction(db, transaction_id=transaction_id)
+    service = TransactionService(db)
+    db_transaction = service.get_transaction(transaction_id=transaction_id)
     if db_transaction is None:
         raise HTTPException(status_code=404, detail="Transaction not found")
     return db_transaction
 
 @transaction_router.get("/", response_model=list[schemes.Transaction])
 def read_transactions(skip: int = 0, limit: int = 10, db: Session = Depends(get_db)):
-    return TransactionService.get_transactions(db, skip=skip, limit=limit)
+    service = TransactionService(db)
+    return service.get_transactions(skip=skip, limit=limit)
 
 @transaction_router.delete("/{transaction_id}", response_model=schemes.Transaction)
 def delete_transaction(transaction_id: str, db: Session = Depends(get_db)):
-    db_transaction = TransactionService.delete_transaction(db, transaction_id=transaction_id)
+    service = TransactionService(db)
+    db_transaction = service.delete_transaction(transaction_id=transaction_id)
     if db_transaction is None:
         raise HTTPException(status_code=404, detail="Transaction not found")
     return db_transaction
+
+@transaction_router.put("/{transaction_id}/status", response_model=schemes.Transaction)
+async def update_transaction_status(
+    transaction_id: str,
+    transaction_update: schemes.TransactionUpdate,  # JSON 본문으로 받기
+    db: Session = Depends(get_db)
+):
+    service = TransactionService(db)
+    updated_transaction = service.update_transaction_status(transaction_id, transaction_update)
+    if not updated_transaction:
+        raise HTTPException(status_code=404, detail="Transaction not found")
+    return updated_transaction
+
+@transaction_router.delete("/{transaction_id}", response_model=dict)
+async def delete_transaction(
+    transaction_id: str,
+    db: Session = Depends(get_db)
+):
+    service = TransactionService(db)
+    deleted_transaction = service.delete_transaction(transaction_id)
+    
+    if not deleted_transaction:
+        raise HTTPException(status_code=404, detail="Transaction not found")
+    
+    return {"detail": "Transaction deleted successfully"}

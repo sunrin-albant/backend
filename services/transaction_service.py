@@ -41,3 +41,9 @@ class TransactionService:
         # if user is None:
         #     raise credentials_exception
         return user_id
+    
+    def update_transaction_status(self, transaction_id: str, transaction_update: schemes.TransactionUpdate):
+        return self.repository.update_transaction_status(transaction_id, transaction_update)
+    
+    def delete_transaction(self, transaction_id: str):
+        return self.repository.delete_transaction(transaction_id)

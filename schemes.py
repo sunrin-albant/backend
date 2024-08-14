@@ -72,3 +72,9 @@ class Transaction(TransactionBase):
 
     class Config:
         orm_mode = True
+        
+class TransactionUpdate(BaseModel):
+    status: int
+
+    class Config:
+        orm_mode = True

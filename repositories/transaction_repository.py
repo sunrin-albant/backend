@@ -25,3 +25,23 @@ class TransactionRepository:
             self.db.delete(db_transaction)
             self.db.commit()
         return db_transaction
+    
+    
+    def update_transaction_status(self, transaction_id: str, transaction_update: schemes.TransactionUpdate):
+        transaction = self.get_transaction(transaction_id)
+        if transaction:
+            transaction.status = transaction_update.status
+            self.db.commit()
+            self.db.refresh(transaction)
+        else:
+            print('Transaction not found')
+        return transaction
+    
+    def delete_transaction(self, transaction_id: str):
+        transaction = self.get_transaction(transaction_id)
+        if not transaction:
+            return None
+        
+        self.db.delete(transaction)
+        self.db.commit()
+        return transaction
