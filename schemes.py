@@ -78,3 +78,20 @@ class TransactionUpdate(BaseModel):
 
     class Config:
         orm_mode = True
+        
+class UserTransactionCreate(BaseModel):
+    user_id: str | None = None
+    transaction_post_id: str
+    heart: bool = False
+
+class UserTransactionUpdate(BaseModel):
+    heart: bool
+
+class UserTransactionResponse(BaseModel):
+    user_transaction_post_id: str
+    user_id: str
+    transaction_post_id: str
+    heart: bool
+    
+    class Config:
+        orm_mode = True

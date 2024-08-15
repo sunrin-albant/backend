@@ -72,7 +72,7 @@ class Transaction(Base):
 class UserTransaction(Base):
     __tablename__ = 'user_transaction'
     
-    user_transaction_post_id = Column(String, primary_key=True, index=True)
+    user_transaction_post_id = Column(String, primary_key=True, index=True, default=lambda: str(uuid.uuid4()))
     user_id = Column(String, ForeignKey('user.user_id'))
     transaction_post_id = Column(String, ForeignKey('transaction_post.transaction_post_id'))
     heart = Column(Boolean, default=False)
