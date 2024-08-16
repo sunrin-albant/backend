@@ -22,6 +22,10 @@ class UserOut(BaseModel):
 
     class Config:
         orm_mode = True
+        
+class UserLogin(BaseModel):
+    email: str
+    password: str
 
 class TransactionPostBase(BaseModel):
     user_id: str
@@ -93,5 +97,16 @@ class UserTransactionResponse(BaseModel):
     transaction_post_id: str
     heart: bool
     
+    class Config:
+        orm_mode = True
+        
+class Notification(BaseModel):
+    notification_id: str
+    transaction_id: str | None = None
+    transaction_post_id: str | None = None
+    user_id: str
+    type: int
+    content: str
+
     class Config:
         orm_mode = True

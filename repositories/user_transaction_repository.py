@@ -6,7 +6,6 @@ class UserTransactionRepository:
     def __init__(self, db: Session):
         self.db = db
     
-    
     def create_user_transaction(self, user_transaction: UserTransaction):
         self.db.add(user_transaction)
         self.db.commit()

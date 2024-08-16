@@ -31,7 +31,6 @@ class User(Base):
     # 관계 정의
     transaction_posts = relationship("TransactionPost", back_populates="user")
     user_transactions = relationship("UserTransaction", back_populates="user")
-    notifications = relationship("Notification", back_populates="user")
     transactions = relationship("Transaction", back_populates="user")
 
 
@@ -51,12 +50,11 @@ class TransactionPost(Base):
     user = relationship("User", back_populates="transaction_posts")
     transactions = relationship("Transaction", back_populates="transaction_post")
     user_transactions = relationship("UserTransaction", back_populates="transaction_post")
-    notifications = relationship("Notification", back_populates="transaction_post")
     
 class Transaction(Base):
     __tablename__ = 'transaction'
     
-    transaction_id = Column(String, primary_key=True, index=True, default=lambda: str(uuid.uuid4()))
+    transaction_id = Column(String(255), primary_key=True, index=True, default=lambda: str(uuid.uuid4()))
     transaction_post_id = Column(String, ForeignKey('transaction_post.transaction_post_id'))
     user_id = Column(String, ForeignKey('user.user_id'))
     status = Column(Integer)
@@ -84,16 +82,12 @@ class UserTransaction(Base):
 class Notification(Base):
     __tablename__ = 'notification'
     
-    notification_id = Column(String, primary_key=True, index=True)
+    notification_id = Column(String(255), primary_key=True, index=True, default=lambda: str(uuid.uuid4()))
     transaction_id = Column(String, ForeignKey('transaction.transaction_id'))
-    transaction_post_id = Column(String, ForeignKey('transaction_post.transaction_post_id'))
-    user_id = Column(String, ForeignKey('user.user_id'))
     type = Column(Integer)
-    content = Column(String)
+    content = Column(String(500))
     
     # 관계 정의
-    user = relationship("User", back_populates="notifications")
     transaction = relationship("Transaction", back_populates="notifications")
-    transaction_post = relationship("TransactionPost", back_populates="notifications")
 
 

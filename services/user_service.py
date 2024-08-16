@@ -94,7 +94,7 @@ class RegisterService:
         return {"message": "Email verified successfully"}
 
     async def login_for_access_token(self, form_data, db: Session):
-        user = self.user_repository.get_user_by_username(db, form_data.username)
+        user = self.user_repository.get_user_by_email(db, form_data.email)
         if not user or not self.pwd_context.verify(form_data.password, user.password):
             raise HTTPException(status_code=401, detail="Incorrect email or password")
         if not user.is_active:

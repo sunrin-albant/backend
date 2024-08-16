@@ -1,7 +1,7 @@
 from fastapi import APIRouter, HTTPException, Depends, BackgroundTasks
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from schemes import UserCreate, VerificationCodeModel
+from schemes import UserCreate, UserLogin, VerificationCodeModel
 from services.user_service import RegisterService
 from database import SessionLocal
 
@@ -26,7 +26,7 @@ async def verify_email(verification: VerificationCodeModel, db: Session = Depend
     return await register_service.verify_email(verification, db)
 
 @register_router.post("/token", response_model=dict)
-async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+async def login_for_access_token(form_data: UserLogin, db: Session = Depends(get_db)):
     return await register_service.login_for_access_token(form_data, db)
 
 @register_router.get("/users/me", response_model=UserCreate)

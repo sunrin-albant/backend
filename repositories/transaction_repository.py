@@ -11,6 +11,17 @@ class TransactionRepository:
         self.db.add(db_transaction)
         self.db.commit()
         self.db.refresh(db_transaction)
+        
+        notification = model.Notification(
+            transaction_id=db_transaction.transaction_id,
+            transaction_post_id=db_transaction.transaction_post_id,
+            user_id=db_transaction.transaction_post.user_id,  # transaction_post의 user_id
+            type=1,  # 알림의 타입 설정 (예: 1 = 새로운 거래 알림)
+            content="새로운 거래가 생성되었습니다."
+        )
+        self.db.add(notification)
+        self.db.commit()
+        
         return db_transaction
 
     def get_transaction(self, transaction_id: str):
@@ -35,6 +46,18 @@ class TransactionRepository:
             self.db.refresh(transaction)
         else:
             print('Transaction not found')
+            
+        if transaction_update.status == 2:
+            notification = model.Notification(
+                transaction_id=transaction.transaction_id,
+                transaction_post_id=transaction.transaction_post_id,
+                user_id=transaction.user_id,  # transaction_post의 user_id
+                type=2,  # 알림의 타입 설정 (예: 2 = 거래 완료 알림)
+                content="거래가 완료되었습니다."
+            )
+            self.db.add(notification)
+            self.db.commit()
+        
         return transaction
     
     def delete_transaction(self, transaction_id: str):
