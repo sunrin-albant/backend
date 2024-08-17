@@ -17,13 +17,23 @@ def get_db():
     finally:
         db.close()
 
-@notification_router.get("/", response_model=List[Notification])
+@notification_router.get("/adopted", response_model=List[Notification])
 async def get_notifications(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
     service = NotificationService(db)
     user_id = await service.get_current_user_id(token, db)
-    notifications = service.get_user_notifications(user_id)
+    notification_type = 2
+    notifications = service.get_user_notifications_adopted(user_id, notification_type)
     if not notifications:
         raise HTTPException(status_code=404, detail="No notifications found")
     return notifications
 
-# gpt 봐바 테이블 언어 utf-8로 바꿔야함
+@notification_router.get("/submit", response_model=List[Notification])
+async def get_notifications(db: Session = Depends(get_db), token: str = Depends(oauth2_scheme)):
+    service = NotificationService(db)
+    user_id = await service.get_current_user_id(token, db)
+    notification_type = 1
+    notifications = service.get_user_notifications_submit(user_id, notification_type)
+    if not notifications:
+        raise HTTPException(status_code=404, detail="No notifications found")
+    return notifications
+

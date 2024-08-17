@@ -103,8 +103,7 @@ class UserTransactionResponse(BaseModel):
 class Notification(BaseModel):
     notification_id: str
     transaction_id: str | None = None
-    transaction_post_id: str | None = None
-    user_id: str
+    user_id: str | None = None
     type: int
     content: str
 
