@@ -17,7 +17,7 @@ def get_db():
     finally:
         db.close()
 
-@register_router.post("/", response_model=UserCreate)
+@register_router.post("/register", response_model=UserCreate)
 async def register(user: UserCreate, background_tasks: BackgroundTasks, db: Session = Depends(get_db)):
     return await register_service.register_user(user, background_tasks, db)
 
@@ -25,10 +25,10 @@ async def register(user: UserCreate, background_tasks: BackgroundTasks, db: Sess
 async def verify_email(verification: VerificationCodeModel, db: Session = Depends(get_db)):
     return await register_service.verify_email(verification, db)
 
-@register_router.post("/token", response_model=dict)
+@register_router.post("/login", response_model=dict)
 async def login_for_access_token(form_data: UserLogin, db: Session = Depends(get_db)):
     return await register_service.login_for_access_token(form_data, db)
 
-@register_router.get("/users/me", response_model=UserCreate)
+@register_router.get("/me", response_model=UserCreate)
 async def read_users_me(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     return await register_service.get_current_user(token, db)

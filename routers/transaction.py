@@ -19,7 +19,7 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
 
 
-@transaction_router.post("/{transaction_post_id}/submit", response_model=schemes.Transaction)
+@transaction_router.post("/{transaction_post_id}", response_model=schemes.Transaction)
 async def submit_transaction(
     transaction_post_id: str, 
     transaction: schemes.TransactionCreate, 
@@ -56,7 +56,7 @@ def delete_transaction(transaction_id: str, db: Session = Depends(get_db)):
         raise HTTPException(status_code=404, detail="Transaction not found")
     return db_transaction
 
-@transaction_router.put("/{transaction_id}/status", response_model=schemes.Transaction)
+@transaction_router.put("/{transaction_id}", response_model=schemes.Transaction)
 async def update_transaction_status(
     transaction_id: str,
     transaction_update: schemes.TransactionUpdate,  # JSON 본문으로 받기
