@@ -44,6 +44,7 @@ class TransactionPost(Base):
     deadline = Column(Date, nullable=True)
     point = Column(Integer, nullable=False)
     tag = Column(String(255), nullable=True)
+    tag2 = Column(String(255), nullable=True)   
     image_pathname = Column(String(255), nullable=True)
     created_date = Column(DateTime, default=datetime.now(timezone.utc))
 

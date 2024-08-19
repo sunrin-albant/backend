@@ -48,3 +48,6 @@ class TransactionPostService:
         # if user is None:
         #     raise credentials_exception
         return user_id
+    
+    async def search_posts(self, search: str):
+        return self.repository.search_posts(search)

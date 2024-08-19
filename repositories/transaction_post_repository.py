@@ -1,5 +1,6 @@
 # transaction_post_repository.py
 
+from sqlalchemy import or_
 from sqlalchemy.orm import Session
 from model import TransactionPost
 from schemes import TransactionPostCreate, TransactionPostUpdate
@@ -39,5 +40,15 @@ class TransactionPostRepository:
 
     def get_all_posts(self) -> list[TransactionPost]:
         return self.db.query(TransactionPost).all()
+    
+    def search_posts(self, search: str):
+        results = self.db.query(TransactionPost).filter(
+            or_(
+                TransactionPost.title.ilike(f"%{search}%"),  # title에서 검색 (대소문자 구분 없이)
+                TransactionPost.tag.ilike(f"%{search}%"),
+                TransactionPost.tag2.ilike(f"%{search}%") # tag에서 검색 (대소문자 구분 없이)
+            )
+        ).all()
+        return results
     
     

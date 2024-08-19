@@ -56,3 +56,8 @@ async def delete_post(post_id: str, db: Session = Depends(get_db)):
 async def read_all_posts(db: Session = Depends(get_db)):
     service = TransactionPostService(db)
     return await service.get_all_transaction_posts()
+
+@transaction_posts_router.get("/search/{search}", response_model=List[TransactionPostOut])
+async def search_posts(search: str, db: Session = Depends(get_db)):
+    service = TransactionPostService(db)
+    return await service.search_posts(search)

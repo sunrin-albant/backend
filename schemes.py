@@ -45,6 +45,7 @@ class TransactionPostUpdate(BaseModel):
     deadline: date | None = None
     point: int | None = None
     tag: str | None = None
+    tag2: str | None = None
     image_pathname: str | None = None
 
 class TransactionPostOut(TransactionPostBase):
