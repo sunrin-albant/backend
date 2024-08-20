@@ -2,7 +2,7 @@
 
 from sqlalchemy import or_
 from sqlalchemy.orm import Session
-from model import TransactionPost
+from model import TransactionPost, User
 from schemes import TransactionPostCreate, TransactionPostUpdate
 
 class TransactionPostRepository:
@@ -16,6 +16,15 @@ class TransactionPostRepository:
         self.db.add(db_post)
         self.db.commit()
         self.db.refresh(db_post)
+        
+        user = self.db.query(User).filter(User.user_id == user_id).first()
+        if user:
+            if user.point is None:
+                user.point = 0
+        
+                # 포인트 수정
+            user.point -= int(post_data['point'])
+        
         return db_post
 
     def get_post(self, post_id: str) -> TransactionPost:

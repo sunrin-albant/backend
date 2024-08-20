@@ -18,7 +18,7 @@ class User(Base):
     user_id = Column(String(255), primary_key=True, index=True)
     username = Column(String(10), unique=True, nullable=False)
     email = Column(String(255), unique=True, nullable=False)
-    point = Column(Integer)
+    point = Column(Integer, default=300)
     profile_pathname = Column(String(255))
     password = Column(String(255), nullable=False)
     department = Column(Enum(DepartmentEnum), nullable=True) 
